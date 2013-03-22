@@ -1,0 +1,25 @@
+;;;
+;;; gauche_clipboardlib.stub
+;;;
+
+"
+#include \"gauche_clipboard.h\"
+"
+
+;; The following entry is a dummy one.
+;; Replace it for your definitions.
+
+"extern void write_clipboard(const char* str);
+ ScmObj read_clipboard(void);"
+
+(define-cproc write-clipboard (str::<const-cstring>)
+  (write_clipboard str)
+  (result SCM_UNDEFINED))
+
+(define-cproc read-clipboard ()
+  (result (read_clipboard)))
+
+;; Local variables:
+;; mode: scheme
+;; end:
+
