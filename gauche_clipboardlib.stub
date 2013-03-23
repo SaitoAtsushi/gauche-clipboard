@@ -12,7 +12,7 @@
 "extern void write_clipboard(const char* str);
  ScmObj read_clipboard(void);"
 
-(define-cproc write-clipboard (str::<const-cstring>)
+(define-cproc write-clipboard-internal (str::<const-cstring>)
   (write_clipboard str)
   (result SCM_UNDEFINED))
 

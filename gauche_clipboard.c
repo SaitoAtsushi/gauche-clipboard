@@ -1,22 +1,28 @@
 /*
  * gauche_clipboard.c
  */
-
 #include "gauche_clipboard.h"
 
 void write_clipboard(const char* str)
 {
     HGLOBAL hText;
-    char *pText;
+    WCHAR *pText;
 
-    hText = GlobalAlloc(GMEM_DDESHARE | GMEM_MOVEABLE, strlen(str)+1);
+    int nc = MultiByteToWideChar(CP_UTF8, 0, str, -1, NULL, 0);
+    if (nc == 0) {
+        Scm_Error("Windows error %d on MultiByteToWideChar", GetLastError());
+    }
+    hText = GlobalAlloc(GMEM_DDESHARE | GMEM_MOVEABLE, 2*nc);
     pText = GlobalLock(hText);
-    lstrcpy(pText, str);
+    if(MultiByteToWideChar(CP_UTF8, 0, str, -1, pText, nc) == 0) {
+        GlobalUnlock(hText);
+        Scm_Error("Windows error %d on MultiByteToWideChar", GetLastError());
+    }
     GlobalUnlock(hText);
 
     OpenClipboard(NULL);
     EmptyClipboard();
-    SetClipboardData(CF_TEXT, hText);
+    SetClipboardData(CF_UNICODETEXT, hText);
     CloseClipboard();
 }
 
@@ -34,7 +40,7 @@ ScmObj read_clipboard(void)
         pText = GlobalLock(hText);
         result = SCM_MAKE_STR_COPYING(pText);
         GlobalUnlock(hText);
-	}
+       }
     CloseClipboard();
     return result;
 }
