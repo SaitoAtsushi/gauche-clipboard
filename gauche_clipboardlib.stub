@@ -10,13 +10,13 @@
 ;; Replace it for your definitions.
 
 "extern void write_clipboard(const char* str);
- ScmObj read_clipboard(void);"
+ extern ScmObj read_clipboard(void);"
 
 (define-cproc write-clipboard-internal (str::<const-cstring>)
   (write_clipboard str)
   (result SCM_UNDEFINED))
 
-(define-cproc read-clipboard ()
+(define-cproc read-clipboard-internal ()
   (result (read_clipboard)))
 
 ;; Local variables:

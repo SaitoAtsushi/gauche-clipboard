@@ -28,19 +28,25 @@ void write_clipboard(const char* str)
 
 ScmObj read_clipboard(void)
 {
-    HANDLE hText;
-    char *pText;
     ScmObj result;
 
     OpenClipboard(NULL);
 
-    hText = GetClipboardData(CF_TEXT);
+    HANDLE hText = GetClipboardData(CF_UNICODETEXT);
     if(hText == NULL) result = SCM_FALSE;
     else {
-        pText = GlobalLock(hText);
-        result = SCM_MAKE_STR_COPYING(pText);
+        WCHAR *pText = GlobalLock(hText);
+        int nb = WideCharToMultiByte(CP_UTF8, 0, pText, -1, NULL, 0, 0, 0);
+        if (nb == 0) {
+          Scm_Error("Windows error %d on WideCharToMultiByte", GetLastError());
+        }
+        char *mb = SCM_NEW_ATOMIC_ARRAY(char, nb);
+        if (WideCharToMultiByte(CP_UTF8, 0, pText, -1, mb, nb, 0, 0) == 0) {
+          Scm_Error("Windows error %d on WideCharToMultiByte", GetLastError());
+        }
         GlobalUnlock(hText);
-       }
+        result = Scm_MakeString(mb, -1, -1, 0);
+    }
     CloseClipboard();
     return result;
 }
