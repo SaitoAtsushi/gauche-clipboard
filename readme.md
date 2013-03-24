@@ -17,3 +17,9 @@ This module provides an interface to clipboard using Windows API.
     (use clipboard)
     (write-clipboard "文字列") ;; write "文字列" to clipboard.
     (read-clipboard) ;; => "文字列"
+
+## License
+
+Gauche-clipboard is BSD style license.
+
+See also COPYING.
