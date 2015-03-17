@@ -6,10 +6,9 @@ This module provides an interface to clipboard using Windows API.
 
     $ git clone git://github.com/SaitoAtsushi/gauche-clipboard.git
     $ cd gauche-clipboard
-    $ ./DIST gen
     $ ./configure
     $ make
-    $ make -s check
+    $ make check
     $ make install
 
 ## Example
